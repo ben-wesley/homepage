@@ -46,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Generate the menu
 function generateMenu(markdownFiles) {
-    menu.innerHTML = ""; // Clear the menu to prevent duplication
+    menu.innerHTML = ""; // Clear the menu
 
-    // Sort files based on the numeric prefix
+    // Sort and process files
     const sortedFiles = markdownFiles.sort((a, b) => {
         const numA = parseInt(a.name.match(/^\d+/)) || 0;
         const numB = parseInt(b.name.match(/^\d+/)) || 0;
@@ -56,12 +56,11 @@ function generateMenu(markdownFiles) {
     });
 
     sortedFiles.forEach(file => {
-        // Remove the numeric prefix from the filename
         const pageName = file.name.replace(/^\d+-/, "").replace(".md", "");
 
         const link = document.createElement("a");
         link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-        link.href = `/${pageName}`; // URL path for the page
+        link.href = `/${pageName}`;
         link.addEventListener("click", (e) => {
             e.preventDefault();
             navigateTo(pageName);
@@ -70,35 +69,36 @@ function generateMenu(markdownFiles) {
     });
 }
 
-    // Load a page's content
-    async function loadPage(pageName, markdownFiles) {
-        if (pageName === "index") {
-            // Special case for the index page
-            content.innerHTML = `<h1>Welcome</h1><p>This is the homepage. Use the menu to navigate.</p>`;
-            return;
-        }
+function navigateTo(pageName) {
+    history.pushState({}, "", `/homepage/${pageName}`);
+    fetchMarkdownFiles().then(markdownFiles => loadPage(pageName, markdownFiles));
+}
 
-        const file = markdownFiles.find(file => file.name.replace(".md", "") === pageName);
-        if (file) {
-            try {
-                const response = await fetch(file.download_url);
-                const markdown = await response.text();
-                // content.innerHTML = `<h1>${pageName.toUpperCase()}</h1>`;
-                content.innerHTML = marked.parse(markdown);
-            } catch (error) {
-                console.error("Error loading page:", error);
-                content.innerHTML = "<p>Error loading page. Please try again later.</p>";
-            }
-        } else {
-            content.innerHTML = "<p>Page not found.</p>";
-        }
+async function loadPage(pageName, markdownFiles) {
+    console.log("Loading page:", pageName);
+
+    if (pageName === "index") {
+        content.innerHTML = `<h1>Welcome</h1><p>This is the homepage. Use the menu to navigate.</p>`;
+        return;
     }
 
-    // Handle navigation
-    function navigateTo(pageName) {
-        history.pushState({}, "", `/homepage/${pageName}`);
-        fetchMarkdownFiles().then(markdownFiles => loadPage(pageName, markdownFiles));
+    const file = markdownFiles.find(file =>
+        file.name.replace(/^\d+-/, "").replace(".md", "") === pageName
+    );
+
+    if (file) {
+        try {
+            const response = await fetch(file.download_url);
+            const markdown = await response.text();
+            content.innerHTML = marked.parse(markdown);
+        } catch (error) {
+            console.error("Error loading page:", error);
+            content.innerHTML = "<p>Error loading page. Please try again later.</p>";
+        }
+    } else {
+        content.innerHTML = "<p>Page not found.</p>";
     }
+}
 
     // Handle browser back/forward navigation
     window.addEventListener("popstate", () => {
