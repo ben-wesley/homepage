@@ -1,7 +1,7 @@
 # music
 
 ## Education
-* studied piano for 13 years, 9 of which were under the tutelage of [Gretchen Dekker](https://www.ycp.edu/academics/school-of-the-arts-communication-and-global-studies/music/faculty/dekker-gretchen.php), an adjunct professor at York College
+* studied piano for 13 years, 9 of which were under the tutelage of [Gretchen Dekker](https://www.ycp.edu/faculty-staff-directory/gretchen-dekker), an adjunct professor at York College
 * 3rd place winner, 2016 York Symphony Orchestra [youth concerto competition](https://www.facebook.com/YorkSymphony/photos/a.1518819061734556/1669750009974793)
   * listen to my final rehearsal before the competition [HERE](https://youtu.be/s0hUyz5bdCc) (Concerto no. 3 in C Minor, mvt. 1 - L. v. Beethoven)
   * listen to solo selections from my 2016 senior recital [HERE](https://soundcloud.com/benjamin-wesley-100758618/sets/senior-recital)
