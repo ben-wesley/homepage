@@ -1,9 +1,3 @@
-// Handle redirects from 404.html
-const urlParams = new URLSearchParams(window.location.search);
-const redirectPath = urlParams.get("redirect");
-if (redirectPath) {
-    history.replaceState({}, "", redirectPath);
-}
 document.addEventListener("DOMContentLoaded", () => {
     const menu = document.getElementById("menu");
     const content = document.getElementById("content");
@@ -19,20 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(apiUrl);
             const files = await response.json();
 
-            // Filter for `.md` files and generate the menu
+            // Filter for `.md` files
             const markdownFiles = files.filter(file => file.name.endsWith(".md"));
-            markdownFiles.forEach(file => {
-                const pageName = file.name.replace(".md", "");
-
-                const link = document.createElement("a");
-                link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-                link.href = `/${pageName}`; // URL path for the page
-                link.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    navigateTo(pageName);
-                });
-                menu.appendChild(link);
-            });
+            generateMenu(markdownFiles);
 
             // Handle initial page load based on the current URL
             const currentPage = location.pathname.replace("/homepage/", "") || "home";
@@ -43,6 +26,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Generate the menu
+    function generateMenu(markdownFiles) {
+        // Clear the menu to prevent duplication
+        menu.innerHTML = "";
+
+        markdownFiles.forEach(file => {
+            const pageName = file.name.replace(".md", "");
+
+            const link = document.createElement("a");
+            link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+            link.href = `/${pageName}`; // URL path for the page
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                navigateTo(pageName);
+            });
+            menu.appendChild(link);
+        });
+    }
+
     // Load a page's content
     async function loadPage(pageName, markdownFiles) {
         const file = markdownFiles.find(file => file.name.replace(".md", "") === pageName);
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const response = await fetch(file.download_url);
                 const markdown = await response.text();
+                content.innerHTML = `<h1>${pageName.toUpperCase()}</h1>`;
                 content.innerHTML += marked.parse(markdown); // Use the Markdown parser
             } catch (error) {
                 console.error("Error loading page:", error);
