@@ -45,22 +45,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Generate the menu
-    function generateMenu(markdownFiles) {
-        menu.innerHTML = ""; // Clear the menu to prevent duplication
+function generateMenu(markdownFiles) {
+    menu.innerHTML = ""; // Clear the menu to prevent duplication
 
-        markdownFiles.forEach(file => {
-            const pageName = file.name.replace(".md", "");
+    // Sort files based on the numeric prefix
+    const sortedFiles = markdownFiles.sort((a, b) => {
+        const numA = parseInt(a.name.match(/^\d+/)) || 0;
+        const numB = parseInt(b.name.match(/^\d+/)) || 0;
+        return numA - numB;
+    });
 
-            const link = document.createElement("a");
-            link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-            link.href = `/${pageName}`; // URL path for the page
-            link.addEventListener("click", (e) => {
-                e.preventDefault();
-                navigateTo(pageName);
-            });
-            menu.appendChild(link);
+    sortedFiles.forEach(file => {
+        // Remove the numeric prefix from the filename
+        const pageName = file.name.replace(/^\d+-/, "").replace(".md", "");
+
+        const link = document.createElement("a");
+        link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+        link.href = `/${pageName}`; // URL path for the page
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            navigateTo(pageName);
         });
-    }
+        menu.appendChild(link);
+    });
+}
 
     // Load a page's content
     async function loadPage(pageName, markdownFiles) {
