@@ -64,14 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load a page's content
     async function loadPage(pageName, markdownFiles) {
-        /*
         if (pageName === "index") {
             // Special case for the index page
             content.innerHTML = `<h1>Welcome</h1><p>This is the homepage. Use the menu to navigate.</p>`;
             return;
         }
-        */
-        loadPage("home", markdownFiles);
 
         const file = markdownFiles.find(file => file.name.replace(".md", "") === pageName);
         if (file) {
