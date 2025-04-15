@@ -1,3 +1,9 @@
+// Handle redirects from 404.html
+const urlParams = new URLSearchParams(window.location.search);
+const redirectPath = urlParams.get("redirect");
+if (redirectPath) {
+    history.replaceState({}, "", redirectPath);
+}
 document.addEventListener("DOMContentLoaded", () => {
     const menu = document.getElementById("menu");
     const content = document.getElementById("content");
