@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(fileUrl);
             const markdown = await response.text();
-            content.innerHTML = `<h1>${fileUrl.split("/").pop().replace(".md", "").toUpperCase()}</h1>`;
+            // content.innerHTML = `<h1>${fileUrl.split("/").pop().replace(".md", "").toUpperCase()}</h1>`;
             content.innerHTML += marked.parse(markdown); // Use the Markdown parser
         } catch (error) {
             console.error("Error loading page:", error);
