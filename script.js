@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const response = await fetch(file.download_url);
                 const markdown = await response.text();
                 // content.innerHTML = `<h1>${pageName.toUpperCase()}</h1>`;
-                content.innerHTML += marked.parse(markdown);
+                content.innerHTML = marked.parse(markdown);
             } catch (error) {
                 console.error("Error loading page:", error);
                 content.innerHTML = "<p>Error loading page. Please try again later.</p>";
