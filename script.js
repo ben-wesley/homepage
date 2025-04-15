@@ -16,25 +16,21 @@ document.addEventListener("DOMContentLoaded", () => {
             // Filter for `.md` files and generate the menu
             const markdownFiles = files.filter(file => file.name.endsWith(".md"));
             markdownFiles.forEach(file => {
-                const link = document.createElement("a");
                 const pageName = file.name.replace(".md", "");
+
+                const link = document.createElement("a");
                 link.textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-                link.href = `#${pageName}`;
+                link.href = `/${pageName}`; // URL path for the page
                 link.addEventListener("click", (e) => {
                     e.preventDefault();
-                    loadPage(file.download_url);
+                    navigateTo(pageName);
                 });
                 menu.appendChild(link);
             });
 
-            // Load the default page if there's a hash
-            if (location.hash) {
-                const defaultPage = location.hash.replace("#", "");
-                const defaultFile = markdownFiles.find(file => file.name.replace(".md", "") === defaultPage);
-                if (defaultFile) {
-                    loadPage(defaultFile.download_url);
-                }
-            }
+            // Handle initial page load based on the current URL
+            const currentPage = location.pathname.replace("/homepage/", "") || "home";
+            loadPage(currentPage, markdownFiles);
         } catch (error) {
             console.error("Error fetching markdown files:", error);
             content.innerHTML = "<p>Error loading menu. Please try again later.</p>";
@@ -42,17 +38,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Load a page's content
-    async function loadPage(fileUrl) {
-        try {
-            const response = await fetch(fileUrl);
-            const markdown = await response.text();
-            // content.innerHTML = `<h1>${fileUrl.split("/").pop().replace(".md", "").toUpperCase()}</h1>`;
-            content.innerHTML += marked.parse(markdown); // Use the Markdown parser
-        } catch (error) {
-            console.error("Error loading page:", error);
-            content.innerHTML = "<p>Error loading page. Please try again later.</p>";
+    async function loadPage(pageName, markdownFiles) {
+        const file = markdownFiles.find(file => file.name.replace(".md", "") === pageName);
+        if (file) {
+            try {
+                const response = await fetch(file.download_url);
+                const markdown = await response.text();
+                content.innerHTML += marked.parse(markdown); // Use the Markdown parser
+            } catch (error) {
+                console.error("Error loading page:", error);
+                content.innerHTML = "<p>Error loading page. Please try again later.</p>";
+            }
+        } else {
+            content.innerHTML = "<p>Page not found.</p>";
         }
     }
+
+    // Handle navigation
+    function navigateTo(pageName) {
+        history.pushState({}, "", `/homepage/${pageName}`);
+        fetchMarkdownFiles().then(() => {
+            const currentPage = pageName;
+            loadPage(currentPage, []);
+        });
+    }
+
+    // Handle browser back/forward navigation
+    window.addEventListener("popstate", () => {
+        const currentPage = location.pathname.replace("/homepage/", "") || "home";
+        fetchMarkdownFiles().then(() => loadPage(currentPage, []));
+    });
 
     // Initialize the menu and content
     fetchMarkdownFiles();
