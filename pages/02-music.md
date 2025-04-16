@@ -1,3 +1,8 @@
+---
+title: "Music"
+slug: "music"
+menu-position: 03
+---
 # music
 
 ## Education
