@@ -1,3 +1,8 @@
+---
+title: "Past Projects"
+slug: "projects"
+menu-position: 05
+---
 # past projects
 
 ## The Mind of Benj Wesley (2019-2022)
