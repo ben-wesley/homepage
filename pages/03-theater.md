@@ -1,3 +1,8 @@
+---
+title: "Theater"
+slug: "theater"
+menu-position: 04
+---
 # Theater
 
 ## upcoming:
